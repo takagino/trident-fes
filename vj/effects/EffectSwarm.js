@@ -2,19 +2,17 @@ class EffectSwarm {
   constructor() {
     this.is3D = true;
     this.agents = [];
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 200; i++) {
       this.agents.push(new SwarmAgent());
     }
-    // ★ WEBGL座標系でターゲットを初期化
-    this.target = createVector(0, 0);
+    // ★ ターゲットを3Dベクトルに
+    this.target = createVector(0, 0, 0);
     this.noiseOffsetX = random(1000);
     this.previousBass = 0;
   }
 
   draw(spectrum) {
-    // background(220, 80, 20, 0.2 * 255); // メインのdrawで描画するので不要
-
-    // ★ WEBGL座標系でターゲットを動かす
+    // ★ ターゲットがZ軸方向にも動くようにする
     this.target.x = map(noise(this.noiseOffsetX), 0, 1, -width / 2, width / 2);
     this.target.y = map(
       noise(this.noiseOffsetX + 100),
@@ -23,6 +21,7 @@ class EffectSwarm {
       -height / 2,
       height / 2
     );
+    this.target.z = map(noise(this.noiseOffsetX + 200), 0, 1, -400, 400);
     this.noiseOffsetX += 0.002;
 
     let totalVolume = 0;
@@ -52,28 +51,29 @@ class EffectSwarm {
 
 class SwarmAgent {
   constructor() {
-    // ★ WEBGL座標系で初期位置を設定
+    // ★ Z座標も初期化
     this.pos = createVector(
       random(-width / 2, width / 2),
-      random(-height / 2, height / 2)
+      random(-height / 2, height / 2),
+      random(-400, 400)
     );
-    this.vel = createVector(random(-1, 1), random(-1, 1));
-    this.acc = createVector(0, 0);
+    // ★ 3Dの速度ベクトル
+    this.vel = p5.Vector.random3D();
+    this.acc = createVector(0, 0, 0);
     this.maxForce = 0.3;
   }
 
   update(agents, target, maxSpeed, isBeat) {
-    // ★ separateメソッドにmaxSpeedを渡す
     let separation = this.separate(agents, maxSpeed);
     let steering;
 
     if (isBeat) {
-      // ★ WEBGLの中心(0,0)から逃げる
-      let flee = p5.Vector.sub(this.pos, createVector(0, 0));
+      let flee = p5.Vector.sub(this.pos, createVector(0, 0, 0));
       flee.setMag(maxSpeed * 3);
       steering = p5.Vector.sub(flee, this.vel);
       steering.limit(this.maxForce * 10);
     } else {
+      // ★ ターゲットも3Dベクトルとして扱う
       let desired = p5.Vector.sub(target, this.pos);
       desired.setMag(maxSpeed);
       steering = p5.Vector.sub(desired, this.vel);
@@ -90,17 +90,19 @@ class SwarmAgent {
     this.pos.add(this.vel);
     this.acc.mult(0);
 
-    // ★ WEBGL座標系で画面端の処理
-    if (this.pos.x < -width / 2) this.pos.x = width / 2;
-    if (this.pos.x > width / 2) this.pos.x = -width / 2;
-    if (this.pos.y < -height / 2) this.pos.y = height / 2;
-    if (this.pos.y > height / 2) this.pos.y = -height / 2;
+    // ★ Z軸の画面端処理も追加
+    const margin = 400;
+    if (this.pos.x < -width / 2 - margin) this.pos.x = width / 2 + margin;
+    if (this.pos.x > width / 2 + margin) this.pos.x = -width / 2 - margin;
+    if (this.pos.y < -height / 2 - margin) this.pos.y = height / 2 + margin;
+    if (this.pos.y > height / 2 + margin) this.pos.y = -height / 2 - margin;
+    if (this.pos.z < -margin) this.pos.z = margin;
+    if (this.pos.z > margin) this.pos.z = -margin;
   }
 
-  // ★ maxSpeedを引数で受け取るように変更
   separate(agents, maxSpeed) {
-    let desiredSeparation = 20.0;
-    let steer = createVector(0, 0);
+    let desiredSeparation = 30.0; // 少し距離を広げる
+    let steer = createVector(0, 0, 0);
     let count = 0;
     for (let other of agents) {
       let d = p5.Vector.dist(this.pos, other.pos);
@@ -117,7 +119,7 @@ class SwarmAgent {
     }
     if (steer.mag() > 0) {
       steer.normalize();
-      steer.mult(maxSpeed); // ★ this.maxSpeedではなく、引数のmaxSpeedを使う
+      steer.mult(maxSpeed);
       steer.sub(this.vel);
       steer.limit(this.maxForce);
     }
@@ -126,14 +128,23 @@ class SwarmAgent {
 
   draw() {
     push();
-    // ★ WEBGLなので3D空間の座標として描画
-    translate(this.pos.x, this.pos.y, 0);
-    rotate(this.vel.heading());
+    translate(this.pos.x, this.pos.y, this.pos.z);
+
+    // ★ 進行方向を向くように回転（少し複雑な計算）
+    let dir = this.vel.copy();
+    let rotY = atan2(dir.x, dir.z);
+    let rotX = atan2(dir.y, createVector(dir.x, 0, dir.z).mag());
+    rotateY(rotY);
+    rotateX(-rotX);
+
+    // ★ Z座標に応じて大きさを変える
+    const size = map(this.pos.z, -400, 400, 5, 25);
+
     fill(40, 30, 100);
     noStroke();
-    // Z軸回転を考慮して描画（WEBGLではrotate()は3D回転になるため）
-    rotateZ(PI / 2);
-    triangle(0, -5, 0, 5, 10, 0); // 矢印のような形に変更
+
+    // ★ 基本のサイズを大きく
+    triangle(0, 0, -size * 2, size, -size * 2, -size);
     pop();
   }
 }

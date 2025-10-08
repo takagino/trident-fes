@@ -45,7 +45,6 @@ class EffectRotatingCircles {
     //orbitControl();
 
     blendMode(BLEND);
-    background(0);
     blendMode(ADD); // 光が重なるように加算ブレンド
     noFill();
 

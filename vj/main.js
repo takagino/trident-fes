@@ -38,23 +38,23 @@ function setup() {
     fft.setInput();
   }
 
-  // effects.push(new EffectBars());
-  //effects.push(new EffectCircles());
-  //effects.push(new EffectWaveformCircular());
-  //effects.push(new EffectParticles());
-  //effects.push(new EffectTunnel());
-  //effects.push(new EffectKaleidoscope());
-  //effects.push(new EffectMatrix());
-  //effects.push(new EffectBlob());
-  //effects.push(new EffectImageGrid());
+  effects.push(new EffectBars());
+  effects.push(new EffectCircles());
+  effects.push(new EffectWaveformCircular());
+  effects.push(new EffectParticles());
+  effects.push(new EffectTunnel());
+  effects.push(new EffectKaleidoscope());
+  effects.push(new EffectMatrix());
+  effects.push(new EffectBlob());
+  effects.push(new EffectImageGrid());
   effects.push(new EffectLissajous());
-  // effects.push(new EffectSunburst());
-  // effects.push(new EffectEqualizerGrid());
-  // effects.push(new EffectDancers());
-  // effects.push(new EffectRadialShape());
-  // effects.push(new EffectMoscowSchool());
-  //effects.push(new EffectRotatingCircles());
-  // effects.push(new EffectBouncers());
+  effects.push(new EffectSunburst());
+  effects.push(new EffectEqualizerGrid());
+  effects.push(new EffectDancers());
+  effects.push(new EffectRadialShape());
+  effects.push(new EffectMoscowSchool());
+  effects.push(new EffectRotatingCircles());
+  effects.push(new EffectBouncers());
   effects.push(new EffectSwarm());
 
   pickTwoRandomEffects();
