@@ -63,7 +63,7 @@ class EffectRotatingCircles {
       rotateZ(((frameCount * this.rotZ[i]) / 100) * speedMultiplier);
 
       // 低音で線の太さを変える
-      strokeWeight(map(bassLevel, 0, 180, 2, 20));
+      strokeWeight(map(bassLevel, 0, 180, 1, 5));
       stroke(this.strokeColor[i]);
 
       // 円を描画
