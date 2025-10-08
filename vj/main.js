@@ -2,47 +2,60 @@ let mic,
   fft,
   isMicActive = false,
   img,
+  song,
   myFont;
 
+const USE_MIC = false;
 const FFT_SIZE = 1024;
-const CUT_LOW_FREQ = 224;
+const CUT_LOW_FREQ = 24;
 
 let effects = [];
 let activeIndex1 = 0,
   activeIndex2 = 1;
 let lastSwitchTime = 0;
-const SWITCH_INTERVAL = 5000;
+const SWITCH_INTERVAL = 10000;
 
 function preload() {
   img = loadImage(
     'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
   );
   myFont = loadFont('assets/RobotoMono-Regular.ttf');
+
+  if (!USE_MIC) {
+    song = loadSound('assets/bgm.mp3');
+  }
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   colorMode(HSB, 360, 100, 100);
-  mic = new p5.AudioIn();
-  fft = new p5.FFT(0.8, FFT_SIZE);
-  fft.setInput(mic);
+  fft = new p5.FFT(0.9, FFT_SIZE);
+
+  if (USE_MIC) {
+    mic = new p5.AudioIn();
+    fft.setInput(mic);
+  } else {
+    fft.setInput();
+  }
 
   effects.push(new EffectBars());
   effects.push(new EffectCircles());
   effects.push(new EffectWaveformCircular());
-  effects.push(new EffectParticles());
-  effects.push(new EffectTunnel());
-  effects.push(new EffectKaleidoscope());
-  effects.push(new EffectMatrix());
-  effects.push(new EffectBlob());
-  effects.push(new EffectImageGrid());
-  effects.push(new EffectLissajous());
-  effects.push(new EffectSunburst());
-  effects.push(new EffectEqualizerGrid());
-  effects.push(new EffectDancers());
-  effects.push(new EffectRadialShape());
-  //effects.push(new EffectMoscowSchool());
-  effects.push(new EffectRotatingCircles());
+  // effects.push(new EffectParticles());
+  // effects.push(new EffectTunnel());
+  // effects.push(new EffectKaleidoscope());
+  // effects.push(new EffectMatrix());
+  // effects.push(new EffectBlob());
+  // effects.push(new EffectImageGrid());
+  // effects.push(new EffectLissajous());
+  // effects.push(new EffectSunburst());
+  // effects.push(new EffectEqualizerGrid());
+  // effects.push(new EffectDancers());
+  // effects.push(new EffectRadialShape());
+  // effects.push(new EffectMoscowSchool());
+  // effects.push(new EffectRotatingCircles());
+  // effects.push(new EffectBouncers());
+  effects.push(new EffectSwarm());
 
   pickTwoRandomEffects();
 }
@@ -67,20 +80,8 @@ function draw() {
   const fullSpectrum = fft.analyze();
   const spectrum = fullSpectrum.slice(CUT_LOW_FREQ);
 
-  const effect1 = effects[activeIndex1];
-  const effect2 = effects[activeIndex2];
-
-  if (effect1.is3D || effect2.is3D) {
-    if (effect1.is3D) effect1.draw(spectrum);
-    if (effect2.is3D) effect2.draw(spectrum);
-  } else {
-    push();
-    translate(-width / 2, -height / 2);
-    background(0);
-    effect1.draw(spectrum);
-    effect2.draw(spectrum);
-    pop();
-  }
+  effects[activeIndex1].draw(spectrum);
+  effects[activeIndex2].draw(spectrum);
 }
 
 function mousePressed() {
@@ -89,7 +90,13 @@ function mousePressed() {
       .resume()
       .then(() => {
         console.log('AudioContext resumed!');
-        mic.start();
+        if (USE_MIC) {
+          mic.start();
+          console.log('Microphone started!');
+        } else {
+          song.loop();
+          console.log('MP3 playback started!');
+        }
         isMicActive = true;
         lastSwitchTime = millis();
       });
