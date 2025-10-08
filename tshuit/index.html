@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>チーム出the印</title>
+  <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplebar/6.2.5/simplebar.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body {
+      overflow: hidden;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.7;
+      letter-spacing: 0.05em;
+    }
+
+    ul {
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .wrapper {
+      width: 90%;
+      margin: 3rem auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .image {
+      position: relative;
+      flex: 1;
+    }
+
+    #d {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .inner {
+      padding: 1rem;
+      border: 2px solid #cbd2e0;
+      border-right: none;
+    }
+
+    .color {
+      width: 6rem;
+      height: calc(100vh - 6rem);
+      margin-right: 1rem;
+      overflow-y: scroll;
+      -ms-overflow-style: none;
+      /* IE, Edge 対応 */
+      scrollbar-width: none;
+      /* Firefox 対応 */
+    }
+
+    .color i {
+      display: block;
+      width: 50px;
+      height: 50px;
+      border: 2px solid #ddd;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    .color i:hover {
+      transform: scale(1.2);
+    }
+
+    .design {
+      width: 8rem;
+      height: calc(100vh - 6rem);
+      margin-right: 1rem;
+      overflow-y: scroll;
+      -ms-overflow-style: none;
+      /* IE, Edge 対応 */
+      scrollbar-width: none;
+      /* Firefox 対応 */
+    }
+
+    .design img {
+      width: 5rem;
+      margin-bottom: 2rem;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    .design img:hover {
+      transform: scale(1.2);
+    }
+
+    .design img:last-child {
+      margin-bottom: 0;
+    }
+
+    .design::-webkit-scrollbar {
+      /* Chrome, Safari 対応 */
+      display: none;
+    }
+
+    .simplebar-scrollbar::before {
+      background: #ffffff;
+      border-radius: 0;
+      width: 5px;
+      margin-left: 3px;
+      margin-top: 2px;
+    }
+
+    .simplebar-scrollbar.simplebar-visible::before {
+      opacity: 1;
+    }
+
+    .simplebar-track {
+      background: #cbd2e0;
+      width: 15px !important;
+    }
+
+    .price {
+      width: 250px;
+      padding-top: 30vh;
+    }
+
+    #info {
+      margin-bottom: 1rem;
+    }
+
+    #short,
+    #long {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .price a {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: .5rem 1.5rem;
+      border-radius: 1rem;
+      background-color: #666;
+      color: #fff;
+      text-decoration: none;
+      transition: .3s;
+    }
+
+    .price a:hover {
+      background-color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="color scroll-area" data-simplebar data-simplebar-auto-hide="false">
+      <div class="inner">
+        <i data-num="01" data-color="ffffff" data-text="ホワイト"></i>
+        <i data-num="02" data-color="000000" data-text="ブラック"></i>
+        <i data-num="03" data-color="c7c7c7" data-text="グレー"></i>
+        <i data-num="04" data-color="111739" data-text="ネイビー"></i>
+        <i data-num="05" data-color="363928" data-text="アーミーグリーン"></i>
+        <i data-num="06" data-color="efd657" data-text="イエロー"></i>
+        <i data-num="07" data-color="ef4f12" data-text="オレンジ"></i>
+        <i data-num="08" data-color="e068a3" data-text="ピンク"></i>
+        <i data-num="09" data-color="eecfd5" data-text="ライトピンク"></i>
+        <i data-num="10" data-color="6e1d23" data-text="バーガンディ"></i>
+        <i data-num="11" data-color="de1e1b" data-text="レッド"></i>
+        <i data-num="12" data-color="00298b" data-text="ロイヤルブルー"></i>
+        <i data-num="13" data-color="0096bd" data-text="ターコイズ"></i>
+        <i data-num="14" data-color="2e1c72" data-text="パープル"></i>
+      </div>
+    </div>
+    <div class="design scroll-area" data-simplebar data-simplebar-auto-hide="false">
+      <div class="inner">
+        <img data-num="01" data-text="border-mini" src="./images/design-icon/01.png" alt="">
+        <img data-num="02" data-text="border" src="./images/design-icon/02.png" alt="">
+        <img data-num="03" data-text="grrr..." src="./images/design-icon/03.png" alt="">
+        <img data-num="04" data-text="KUMASHAKE-center・黒" src="./images/design-icon/04.png" alt="">
+        <img data-num="05" data-text="KUMASHAKE-center・白" src="./images/design-icon/05.png" alt="">
+        <img data-num="06" data-text="SHAKEKUMA" src="./images/design-icon/06.png" alt="">
+        <img data-num="07" data-text="ひょっこり" src="./images/design-icon/07.png" alt="">
+        <img data-num="08" data-text="Heart" src="./images/design-icon/08.png" alt="">
+        <img data-num="09" data-text="neco1" src="./images/design-icon/09.png" alt="">
+        <img data-num="10" data-text="neco2" src="./images/design-icon/10.png" alt="">
+        <img data-num="11" data-text="You can do it!!!" src="./images/design-icon/11.png" alt="">
+        <img data-num="12" data-text="ダイニングバー無駄飯" src="./images/design-icon/12.png" alt="">
+        <img data-num="13" data-text="スナック一角獣" src="./images/design-icon/13.png" alt="">
+        <img data-num="14" data-text="barber" src="./images/design-icon/14.png" alt="">
+        <img data-num="15" data-text="三叉会" src="./images/design-icon/15.png" alt="">
+        <img data-num="16" data-text="熱暴走ズ" src="./images/design-icon/16.png" alt="">
+        <!-- <img data-num="17" data-text="トライデントロゴ07" src="./images/design-icon/17.png" alt="">
+        <img data-num="18" data-text="トライデントロゴ08" src="./images/design-icon/18.png" alt="">
+        <img data-num="19" data-text="トライデントロゴ09" src="./images/design-icon/19.png" alt="">
+        <img data-num="20" data-text="パソコン君" src="./images/design-icon/20.png" alt="">
+        <img data-num="21" data-text="目覚まし君" src="./images/design-icon/21.png" alt="">
+        <img data-num="22" data-text="ポップコーン君" src="./images/design-icon/22.png" alt="">
+        <img data-num="23" data-text="トライデントロゴ（カナ）" src="./images/design-icon/23.png" alt="">
+        <img data-num="24" data-text="トライデントロゴ（英語）" src="./images/design-icon/24.png" alt=""> -->
+      </div>
+    </div>
+    <div class="image">
+      <img id="t" src="#" alt="">
+      <img id="d" src="#" alt="">
+    </div>
+    <div class="price">
+      <ul>
+        <li id="info"></li>
+        <li id="short"></li>
+        <li id="long"></li>
+      </ul>
+      <a href="https://forms.gle/VARr2eckVwp6FEATA" target="_blank">お申し込みフォーム</a>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/simplebar/6.2.5/simplebar.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let color = {
+        val: '01',
+        path: `./images/long/01.png`,
+        text: 'ホワイト',
+        icon: document.querySelectorAll('.color i')
+      };
+      let design = {
+        val: '01',
+        path: `./images/design/01.png`,
+        text: 'ポップ',
+        icon: document.querySelectorAll('.design img')
+      }
+
+      let t = document.getElementById('t');
+      let d = document.getElementById('d');
+      let info = document.getElementById('info');
+      let short = document.getElementById('short');
+      let long = document.getElementById('long');
+
+      t.src = color.path;
+      d.src = design.path;
+      info.textContent = `${color.text} × ${design.text}`;
+      short.textContent = `Tシャツ　2,000円`;
+      long.textContent = `ロングTシャツ　2,200円`;
+
+
+      for (const elem of color.icon) {
+        elem.style.backgroundColor = `#${elem.dataset.color}`;
+
+        elem.addEventListener('click', (e) => {
+          let num = e.target.dataset.num;
+          color.text = e.target.dataset.text;
+          t.src = `./images/long/${num}.png`;
+          info.textContent = `${color.text} × ${design.text}`;
+
+          if (num == '01') {
+            short.textContent = `Tシャツ　2,000円`;
+            long.textContent = `ロングTシャツ　2,200円`;
+          } else {
+            short.textContent = `Tシャツ　2,500円`;
+            long.textContent = `ロングTシャツ　2,700円`;
+          }
+        });
+      }
+
+      for (const elem of design.icon) {
+        elem.addEventListener('click', (e) => {
+          let num = e.target.dataset.num;
+          design.text = e.target.dataset.text;
+          d.src = `./images/design/${num}.png`;
+          info.textContent = `${color.text} × ${design.text}`;
+        });
+      }
+    });
+  </script>
+</body>
+</html>
