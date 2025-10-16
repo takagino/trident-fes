@@ -4,7 +4,7 @@ class EffectBouncers {
     this.bouncers = [];
     // ★ FFTの解像度に合わせてボールを生成
     // main.jsのFFT_SIZEやCUT_LOW_FREQと数を合わせる
-    const spectrumLength = 1024 - 24;
+    const spectrumLength = 512 - 12;
     for (let i = 0; i < spectrumLength; i++) {
       // ★ 各ボールに、担当するスペクトルのインデックスを教える
       this.bouncers.push(new Bouncer(i, spectrumLength));
@@ -49,7 +49,7 @@ class Bouncer {
   // ★ 対応する音量レベル(level)を直接受け取る
   update(level) {
     // ★ 音量レベルに応じて上向きの力を生成
-    const upwardForce = map(level, 0, 255, 0, 1.5);
+    const upwardForce = map(level, 0, 255, 0, 5);
     this.applyForce(createVector(0, upwardForce, 0));
 
     // 物理演算

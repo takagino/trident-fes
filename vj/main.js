@@ -1,11 +1,13 @@
+const USE_MIC = false;
+
 let mic,
   fft,
   isMicActive = false,
   img,
   song,
   myFont;
-
-const USE_MIC = false;
+let images = [];
+let currentImage;
 const FFT_SIZE = 1024;
 const CUT_LOW_FREQ = 24;
 
@@ -16,11 +18,11 @@ let lastSwitchTime = 0;
 const SWITCH_INTERVAL = 10000;
 
 function preload() {
-  img = loadImage(
-    'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-  );
+  const NUM_IMAGES = 3;
+  for (let i = 0; i < NUM_IMAGES; i++) {
+    images.push(loadImage('assets/image_' + i + '.jpg'));
+  }
   myFont = loadFont('assets/RobotoMono-Regular.ttf');
-
   if (!USE_MIC) {
     song = loadSound('assets/bgm.mp3');
   }
@@ -46,16 +48,16 @@ function setup() {
   effects.push(new EffectKaleidoscope());
   effects.push(new EffectMatrix());
   effects.push(new EffectBlob());
-  effects.push(new EffectImageGrid());
   effects.push(new EffectLissajous());
   effects.push(new EffectSunburst());
   effects.push(new EffectEqualizerGrid());
   effects.push(new EffectDancers());
   effects.push(new EffectRadialShape());
-  effects.push(new EffectMoscowSchool());
   effects.push(new EffectRotatingCircles());
   effects.push(new EffectBouncers());
   effects.push(new EffectSwarm());
+  effects.push(new EffectPulseCluster());
+  effects.push(new EffectImageTiles());
 
   pickTwoRandomEffects();
 }
@@ -112,6 +114,7 @@ function pickTwoRandomEffects() {
   activeIndex1 = index1;
   activeIndex2 = index2;
   lastSwitchTime = millis();
+  currentImage = random(images);
   console.log(
     'Current Combination:',
     effects[activeIndex1].constructor.name,
