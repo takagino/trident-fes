@@ -7,17 +7,18 @@ class EffectPulseCluster {
 
     for (let i = 0; i < numSpheres; i++) {
       const pos = p5.Vector.random3D().mult(random(clusterRadius));
-      const hue = random(360);
-      this.spheres.push({ pos: pos, hue: hue });
+      this.spheres.push({ pos: pos });
     }
   }
 
-  draw(spectrum) {
-    lights();
+  draw(spectrum, palette) {
+    if (!palette || palette.length === 0) {
+      palette = [color(255)];
+    }
 
+    lights();
     blendMode(BLEND);
 
-    // --- 音声解析 ---
     let bass = 0;
     for (let i = 0; i < 20; i++) {
       bass += spectrum[i];
@@ -42,21 +43,32 @@ class EffectPulseCluster {
       push();
       translate(finalPos);
 
-      const flash = map(highLevel, 0, 80, 0, 40);
+      const colorPos =
+        (map(highLevel, 0, 100, 0, palette.length) +
+          map(
+            sphereData.pos.y,
+            -height / 3,
+            height / 3,
+            0,
+            palette.length / 2
+          )) %
+        palette.length;
 
-      // ★ 2. 基本の明るさを80から60に下げる
+      const index1 = floor(colorPos);
+      const index2 = (index1 + 1) % palette.length;
+      const lerpAmt = colorPos - index1;
+      const sphereColor = lerpColor(palette[index1], palette[index2], lerpAmt);
+      const flash = map(highLevel, 0, 80, 0, 40);
       const finalBrightness = constrain(60 + flash, 0, 100);
 
-      fill(sphereData.hue, 90, finalBrightness);
+      fill(hue(sphereColor), saturation(sphereColor), finalBrightness);
       noStroke();
 
       const baseSize = 15;
-      const pulse = map(bassLevel, 0, 200, 0.5, 2.5);
+      const pulse = map(midLevel, 50, 200, 0.5, 3.5);
 
       sphere(baseSize * pulse);
       pop();
     }
-
-    //blendMode(BLEND);
   }
 }

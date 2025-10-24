@@ -2,17 +2,18 @@ class EffectSwarm {
   constructor() {
     this.is3D = true;
     this.agents = [];
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 150; i++) {
       this.agents.push(new SwarmAgent());
     }
-    // ★ ターゲットを3Dベクトルに
     this.target = createVector(0, 0, 0);
     this.noiseOffsetX = random(1000);
     this.previousBass = 0;
   }
 
-  draw(spectrum) {
-    // ★ ターゲットがZ軸方向にも動くようにする
+  draw(spectrum, palette) {
+    if (!palette || palette.length === 0) {
+      palette = [color(40, 30, 100)];
+    }
     this.target.x = map(noise(this.noiseOffsetX), 0, 1, -width / 2, width / 2);
     this.target.y = map(
       noise(this.noiseOffsetX + 100),
@@ -25,9 +26,7 @@ class EffectSwarm {
     this.noiseOffsetX += 0.002;
 
     let totalVolume = 0;
-    for (let val of spectrum) {
-      totalVolume += val;
-    }
+    for (let val of spectrum) totalVolume += val;
     const avgVolume = totalVolume / spectrum.length;
     const maxSpeed = map(avgVolume, 0, 80, 2, 10);
 
@@ -42,7 +41,7 @@ class EffectSwarm {
 
     for (let agent of this.agents) {
       agent.update(this.agents, this.target, maxSpeed, isBeat);
-      agent.draw();
+      agent.draw(palette);
     }
 
     this.previousBass = currentBass;
@@ -51,13 +50,11 @@ class EffectSwarm {
 
 class SwarmAgent {
   constructor() {
-    // ★ Z座標も初期化
     this.pos = createVector(
       random(-width / 2, width / 2),
       random(-height / 2, height / 2),
       random(-400, 400)
     );
-    // ★ 3Dの速度ベクトル
     this.vel = p5.Vector.random3D();
     this.acc = createVector(0, 0, 0);
     this.maxForce = 0.3;
@@ -66,31 +63,26 @@ class SwarmAgent {
   update(agents, target, maxSpeed, isBeat) {
     let separation = this.separate(agents, maxSpeed);
     let steering;
-
     if (isBeat) {
       let flee = p5.Vector.sub(this.pos, createVector(0, 0, 0));
       flee.setMag(maxSpeed * 3);
       steering = p5.Vector.sub(flee, this.vel);
       steering.limit(this.maxForce * 10);
     } else {
-      // ★ ターゲットも3Dベクトルとして扱う
       let desired = p5.Vector.sub(target, this.pos);
       desired.setMag(maxSpeed);
       steering = p5.Vector.sub(desired, this.vel);
       steering.limit(this.maxForce);
     }
-
     separation.mult(2.0);
     steering.mult(1.0);
     this.acc.add(separation);
     this.acc.add(steering);
-
     this.vel.add(this.acc);
     this.vel.limit(maxSpeed);
     this.pos.add(this.vel);
     this.acc.mult(0);
 
-    // ★ Z軸の画面端処理も追加
     const margin = 400;
     if (this.pos.x < -width / 2 - margin) this.pos.x = width / 2 + margin;
     if (this.pos.x > width / 2 + margin) this.pos.x = -width / 2 - margin;
@@ -101,7 +93,7 @@ class SwarmAgent {
   }
 
   separate(agents, maxSpeed) {
-    let desiredSeparation = 30.0; // 少し距離を広げる
+    let desiredSeparation = 30.0;
     let steer = createVector(0, 0, 0);
     let count = 0;
     for (let other of agents) {
@@ -126,24 +118,29 @@ class SwarmAgent {
     return steer;
   }
 
-  draw() {
+  draw(palette) {
     push();
     translate(this.pos.x, this.pos.y, this.pos.z);
 
-    // ★ 進行方向を向くように回転（少し複雑な計算）
     let dir = this.vel.copy();
-    let rotY = atan2(dir.x, dir.z);
-    let rotX = atan2(dir.y, createVector(dir.x, 0, dir.z).mag());
-    rotateY(rotY);
-    rotateX(-rotX);
+    if (dir.magSq() > 0.01) {
+      let rotY = atan2(dir.x, dir.z);
+      let rotX = atan2(dir.y, createVector(dir.x, 0, dir.z).mag());
+      rotateY(rotY);
+      rotateX(-rotX);
+    }
 
-    // ★ Z座標に応じて大きさを変える
     const size = map(this.pos.z, -400, 400, 5, 25);
+    const speed = this.vel.mag();
+    const colorPos = map(speed, 0, 10, 0, palette.length - 1);
+    const index1 = floor(colorPos);
+    const index2 = (index1 + 1) % palette.length;
+    const lerpAmt = colorPos - index1;
+    const agentColor = lerpColor(palette[index1], palette[index2], lerpAmt);
 
-    fill(40, 30, 100);
+    fill(hue(agentColor), saturation(agentColor), brightness(agentColor), 80);
     noStroke();
 
-    // ★ 基本のサイズを大きく
     triangle(0, 0, -size * 2, size, -size * 2, -size);
     pop();
   }

@@ -1,4 +1,4 @@
-const USE_MIC = false;
+const USE_MIC = false; // Or true
 
 let mic,
   fft,
@@ -15,7 +15,11 @@ let effects = [];
 let activeIndex1 = 0,
   activeIndex2 = 1;
 let lastSwitchTime = 0;
+let colorManager;
 const SWITCH_INTERVAL = 10000;
+
+let palette1 = { name: 'default', colors: [] };
+let palette2 = { name: 'default', colors: [] };
 
 function preload() {
   const NUM_IMAGES = 3;
@@ -26,6 +30,7 @@ function preload() {
   if (!USE_MIC) {
     song = loadSound('assets/bgm.mp3');
   }
+  colorManager = new ColorManager();
 }
 
 function setup() {
@@ -41,23 +46,33 @@ function setup() {
   }
 
   effects.push(new EffectBars());
-  effects.push(new EffectCircles());
-  effects.push(new EffectWaveformCircular());
-  effects.push(new EffectParticles());
-  effects.push(new EffectTunnel());
-  effects.push(new EffectKaleidoscope());
-  effects.push(new EffectMatrix());
   effects.push(new EffectBlob());
-  effects.push(new EffectLissajous());
-  effects.push(new EffectSunburst());
-  effects.push(new EffectEqualizerGrid());
-  effects.push(new EffectDancers());
-  effects.push(new EffectRadialShape());
-  effects.push(new EffectRotatingCircles());
   effects.push(new EffectBouncers());
-  effects.push(new EffectSwarm());
-  effects.push(new EffectPulseCluster());
+  effects.push(new EffectCellularGrowth());
+  effects.push(new EffectCircles());
+  effects.push(new EffectDancers());
+  effects.push(new EffectEqualizerGrid());
+  effects.push(new EffectEyesGrid());
+  effects.push(new EffectFlowField());
+  effects.push(new EffectGeometricNoise());
+  effects.push(new EffectGridMovers());
+  effects.push(new EffectHappyPlace());
+  effects.push(new EffectIcosahedron());
   effects.push(new EffectImageTiles());
+  effects.push(new EffectKaleidoscope());
+  effects.push(new EffectLineTrails());
+  effects.push(new EffectLissajous());
+  effects.push(new EffectMatrix());
+  effects.push(new EffectNoiseRibbons());
+  effects.push(new EffectProceduralFlower());
+  effects.push(new EffectPulseCluster());
+  effects.push(new EffectRecursiveSplit());
+  effects.push(new EffectRotatingCircles());
+  effects.push(new EffectSunburst());
+  effects.push(new EffectSwarm());
+  effects.push(new EffectTunnel());
+  effects.push(new EffectVaseForm());
+  effects.push(new EffectWaveformCircular());
 
   pickTwoRandomEffects();
 }
@@ -82,8 +97,12 @@ function draw() {
   const fullSpectrum = fft.analyze();
   const spectrum = fullSpectrum.slice(CUT_LOW_FREQ);
 
-  effects[activeIndex1].draw(spectrum);
-  effects[activeIndex2].draw(spectrum);
+  if (effects[activeIndex1]) {
+    effects[activeIndex1].draw(spectrum, palette1.colors);
+  }
+  if (effects[activeIndex2]) {
+    effects[activeIndex2].draw(spectrum, palette2.colors);
+  }
 }
 
 function mousePressed() {
@@ -96,8 +115,12 @@ function mousePressed() {
           mic.start();
           console.log('Microphone started!');
         } else {
-          song.loop();
-          console.log('MP3 playback started!');
+          if (song && song.isLoaded()) {
+            song.loop();
+            console.log('MP3 playback started!');
+          } else {
+            console.error('MP3 not loaded yet!');
+          }
         }
         isMicActive = true;
         lastSwitchTime = millis();
@@ -106,20 +129,40 @@ function mousePressed() {
 }
 
 function pickTwoRandomEffects() {
+  if (effects.length === 0) return;
+
   const index1 = floor(random(effects.length));
   let index2 = floor(random(effects.length));
-  while (index1 === index2) {
+  while (effects.length > 1 && index1 === index2) {
     index2 = floor(random(effects.length));
   }
   activeIndex1 = index1;
   activeIndex2 = index2;
   lastSwitchTime = millis();
-  currentImage = random(images);
+
+  palette1 = colorManager.getRandomPalette();
+  palette2 = colorManager.getRandomPalette();
+  while (
+    colorManager.colorSchemes.length > 1 &&
+    palette1.name === palette2.name
+  ) {
+    palette2 = colorManager.getRandomPalette();
+  }
+
+  if (images.length > 0) {
+    currentImage = random(images);
+  }
+
   console.log(
     'Current Combination:',
-    effects[activeIndex1].constructor.name,
-    '+',
-    effects[activeIndex2].constructor.name
+    effects[activeIndex1] ? effects[activeIndex1].constructor.name : 'None',
+    ' (Palette:',
+    palette1.name,
+    ') +',
+    effects[activeIndex2] ? effects[activeIndex2].constructor.name : 'None',
+    ' (Palette:',
+    palette2.name,
+    ')'
   );
 }
 

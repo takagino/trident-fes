@@ -1,4 +1,3 @@
-// エフェクト：イメージタイル
 class EffectImageTiles {
   constructor() {
     this.is3D = true;
@@ -8,15 +7,8 @@ class EffectImageTiles {
     this.noiseOffsetY = random(2000);
   }
 
-  draw(spectrum) {
-    // ★ 音声解析のブロックを削除
-    // let totalVolume = 0;
-    // for (let val of spectrum) { totalVolume += val; }
-    // const avgVolume = totalVolume / spectrum.length;
-
-    // ★ 動きのスピードを、音量に依存しない固定値に変更
-    const moveSpeed = 0.002; // この数値を小さくするとよりゆっくりになります
-
+  draw(spectrum, palette) {
+    const moveSpeed = 0.002;
     const offsetX = map(
       noise(this.noiseOffsetX + frameCount * moveSpeed),
       0,
@@ -32,9 +24,13 @@ class EffectImageTiles {
       30
     );
 
-    // --- 描画処理 (変更なし) ---
     noStroke();
-    texture(currentImage);
+
+    if (currentImage) {
+      texture(currentImage);
+    } else {
+      fill(255);
+    }
 
     const tileWidth = width / this.cols;
     const tileHeight = height / this.rows;

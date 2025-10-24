@@ -2,23 +2,21 @@ class EffectBouncers {
   constructor() {
     this.is3D = true;
     this.bouncers = [];
-    // ★ FFTの解像度に合わせてボールを生成
-    // main.jsのFFT_SIZEやCUT_LOW_FREQと数を合わせる
-    const spectrumLength = 512 - 12;
+    const spectrumLength = 1024 - 24;
     for (let i = 0; i < spectrumLength; i++) {
-      // ★ 各ボールに、担当するスペクトルのインデックスを教える
       this.bouncers.push(new Bouncer(i, spectrumLength));
     }
   }
-  draw(spectrum) {
+  draw(spectrum, palette) {
+    if (!palette || palette.length === 0) {
+      palette = [color(255)];
+    }
     blendMode(ADD);
     lights();
-
     for (let i = 0; i < spectrum.length; i++) {
-      // ★ 各ボールに、対応する音量データを渡して更新・描画
       if (this.bouncers[i]) {
         this.bouncers[i].update(spectrum[i]);
-        this.bouncers[i].draw();
+        this.bouncers[i].draw(palette);
       }
     }
     blendMode(BLEND);
@@ -26,42 +24,28 @@ class EffectBouncers {
 }
 
 class Bouncer {
-  // ★ 担当するインデックス(i)と全体の数(total)を受け取る
   constructor(i, total) {
-    // ★ インデックスに応じて、画面の左から右へ初期配置する
     const x = map(i, 0, total - 1, -width / 2, width / 2);
-    const y = -height / 2; // 最初は地面に
+    const y = -height / 2;
     this.pos = createVector(x, y, random(-200, 200));
-
     this.vel = createVector(0, 0, 0);
     this.acc = createVector(0, 0, 0);
     this.size = 10;
-
-    // ★ インデックスに応じて色を決定
-    this.hue = map(i, 0, total, 0, 360);
-    this.gravity = createVector(0, -0.5, 0); // 重力
+    this.gravity = createVector(0, -0.5, 0);
+    this.index = i;
+    this.total = total;
   }
-
   applyForce(force) {
     this.acc.add(force);
   }
-
-  // ★ 対応する音量レベル(level)を直接受け取る
   update(level) {
-    // ★ 音量レベルに応じて上向きの力を生成
     const upwardForce = map(level, 0, 255, 0, 5);
     this.applyForce(createVector(0, upwardForce, 0));
-
-    // 物理演算
     this.applyForce(this.gravity);
     this.vel.add(this.acc);
     this.pos.add(this.vel);
     this.acc.mult(0);
-
-    // 速度が速すぎないように摩擦をかける
     this.vel.mult(0.98);
-
-    // --- 壁での反射判定 ---
     const floor = -height / 2 + this.size / 2;
     if (this.pos.y < floor) {
       this.pos.y = floor;
@@ -84,11 +68,29 @@ class Bouncer {
     }
   }
 
-  draw() {
+  draw(palette) {
     push();
     translate(this.pos.x, this.pos.y, this.pos.z);
     noStroke();
-    fill(this.hue, 90, 100, 80);
+
+    const colorPos = this.index / (this.total - 1);
+    const colorLerp = colorPos * (palette.length - 1);
+    const index1 = floor(colorLerp);
+    const index2 = ceil(colorLerp);
+    const lerpAmt = colorLerp - index1;
+    const ballColor = lerpColor(
+      palette[index1 % palette.length],
+      palette[index2 % palette.length],
+      lerpAmt
+    );
+
+    fill(
+      ballColor.levels[0],
+      ballColor.levels[1],
+      ballColor.levels[2],
+      80 * 2.55
+    );
+
     sphere(this.size);
     pop();
   }
