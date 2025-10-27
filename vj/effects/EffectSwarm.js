@@ -14,6 +14,7 @@ class EffectSwarm {
     if (!palette || palette.length === 0) {
       palette = [color(40, 30, 100)];
     }
+
     this.target.x = map(noise(this.noiseOffsetX), 0, 1, -width / 2, width / 2);
     this.target.y = map(
       noise(this.noiseOffsetX + 100),
@@ -132,11 +133,22 @@ class SwarmAgent {
 
     const size = map(this.pos.z, -400, 400, 5, 25);
     const speed = this.vel.mag();
-    const colorPos = map(speed, 0, 10, 0, palette.length - 1);
+
+    const colorPos = constrain(
+      map(speed, 0, 10, 0, palette.length - 1),
+      0,
+      palette.length - 1
+    );
     const index1 = floor(colorPos);
-    const index2 = (index1 + 1) % palette.length;
+    const index2 = constrain(ceil(colorPos), 0, palette.length - 1);
     const lerpAmt = colorPos - index1;
-    const agentColor = lerpColor(palette[index1], palette[index2], lerpAmt);
+
+    let agentColor;
+    if (palette[index1] && palette[index2]) {
+      agentColor = lerpColor(palette[index1], palette[index2], lerpAmt);
+    } else {
+      agentColor = palette[0];
+    }
 
     fill(hue(agentColor), saturation(agentColor), brightness(agentColor), 80);
     noStroke();

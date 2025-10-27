@@ -1,4 +1,4 @@
-const USE_MIC = false; // Or true
+const USE_MIC = true; // Or true
 
 let mic,
   fft,
@@ -16,7 +16,7 @@ let activeIndex1 = 0,
   activeIndex2 = 1;
 let lastSwitchTime = 0;
 let colorManager;
-const SWITCH_INTERVAL = 10000;
+const SWITCH_INTERVAL = 20000;
 
 let palette1 = { name: 'default', colors: [] };
 let palette2 = { name: 'default', colors: [] };
@@ -45,33 +45,33 @@ function setup() {
     fft.setInput();
   }
 
-  effects.push(new EffectBars());
-  effects.push(new EffectBlob());
-  effects.push(new EffectBouncers());
-  effects.push(new EffectCellularGrowth());
-  effects.push(new EffectCircles());
-  effects.push(new EffectDancers());
-  effects.push(new EffectEqualizerGrid());
-  effects.push(new EffectEyesGrid());
-  effects.push(new EffectFlowField());
-  effects.push(new EffectGeometricNoise());
-  effects.push(new EffectGridMovers());
-  effects.push(new EffectHappyPlace());
-  effects.push(new EffectIcosahedron());
-  effects.push(new EffectImageTiles());
-  effects.push(new EffectKaleidoscope());
-  effects.push(new EffectLineTrails());
-  effects.push(new EffectLissajous());
-  effects.push(new EffectMatrix());
-  effects.push(new EffectNoiseRibbons());
-  effects.push(new EffectProceduralFlower());
-  effects.push(new EffectPulseCluster());
-  effects.push(new EffectRecursiveSplit());
-  effects.push(new EffectRotatingCircles());
-  effects.push(new EffectSunburst());
+  // effects.push(new EffectBars());
+  // effects.push(new EffectBlob());
+  // effects.push(new EffectBouncers());
+  // effects.push(new EffectCellularGrowth());
+  // effects.push(new EffectCircles());
+  // effects.push(new EffectDancers());
+  // effects.push(new EffectEqualizerGrid());
+  // effects.push(new EffectEyesGrid());
+  // effects.push(new EffectFlowField());
+  // effects.push(new EffectGeometricNoise());
+  // effects.push(new EffectGridMovers());
+  // effects.push(new EffectHappyPlace());
+  // effects.push(new EffectIcosahedron());
+  // effects.push(new EffectImageTiles());
+  // effects.push(new EffectKaleidoscope());
+  // effects.push(new EffectLineTrails());
+  // effects.push(new EffectLissajous());
+  // effects.push(new EffectMatrix());
+  // effects.push(new EffectNoiseRibbons());
+  // effects.push(new EffectProceduralFlower());
+  // effects.push(new EffectPulseCluster());
+  // effects.push(new EffectRecursiveSplit());
+  // effects.push(new EffectRotatingCircles());
+  // effects.push(new EffectSunburst());
   effects.push(new EffectSwarm());
-  effects.push(new EffectTunnel());
-  effects.push(new EffectVaseForm());
+  // effects.push(new EffectTunnel());
+  // effects.push(new EffectVaseForm());
   effects.push(new EffectWaveformCircular());
 
   pickTwoRandomEffects();
