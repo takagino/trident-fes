@@ -10,6 +10,8 @@ const designs = [
   { file: 'photo_woman_black', text: '写真 女性（黒）' },
   { file: 'animal_horse_black', text: '馬（黒）' },
   { file: 'animal_flamingo_black', text: 'フラミンゴ（黒）' },
+  { file: 'animal_buddy', text: 'バディ' },
+  { file: 'animal_nose', text: '鼻' },
   { file: 'bird_piyo_black', text: 'ぴよ（黒）' },
   { file: 'bird_mame_black', text: 'まめ（黒）' },
   { file: 'town_street_black', text: '裏道（黒）' },
@@ -23,12 +25,12 @@ const designs = [
 
 // 価格表
 const prices = {
-  longT: { white: 2200, color: 2700 },
-  shortT: { white: 2000, color: 2500 },
-  flatPouch: { natural: 1500, color: 1700 },
-  dailyPouch: { natural: 1800, color: 2000 },
-  sacoche: { natural: 2500, color: 2700 },
-  towel: { white: 1200 },
+  longT: { white: 2000, color: 2700 },
+  shortT: { white: 1800, color: 2500 },
+  flatPouch: { natural: 1100, color: 1800 },
+  dailyPouch: { natural: 1200, color: 1900 },
+  sacoche: { natural: 1200, color: 1900 },
+  towel: { white: 1000 },
 };
 
 // アイテム一覧 (prices を参照するため、prices の後に定義)
