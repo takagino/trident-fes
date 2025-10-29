@@ -169,7 +169,7 @@ body {
   color: #333;
 }
 .selection-summary .summary-price {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: #d9534f; /* (赤系) */
   margin-top: 0.75rem;
@@ -177,6 +177,7 @@ body {
   border-top: 1px solid #ccc;
 }
 .selection-summary .summary-price span {
+  font-size: 1.5rem;
   font-weight: bold;
   color: #d9534f;
   /* (親要素が bold のため、重複する font-weight を削除) */
@@ -189,6 +190,7 @@ body {
 }
 .submit-button {
   display: inline-block;
+  width: 100%;
   padding: 0.75rem 1.5rem;
   font-size: 1.1rem;
   font-weight: 600;
