@@ -29,6 +29,7 @@
             <button id="next-design" title="次のデザイン">&gt;</button>
           </div>
         </div>
+
         <div class="selection-summary">
           <h3>現在の選択</h3>
           <ul>
@@ -40,13 +41,11 @@
             </li>
           </ul>
         </div>
+
         <div class="submit-button-area">
-          <a
-            href="https://forms.gle/VARr2eckVwp6FEATA"
-            class="submit-button"
-            target="_blank"
-            >お申し込みフォームへ</a
-          >
+          <button type="button" class="submit-button" id="open-form-button">
+            お申し込みフォームへ
+          </button>
         </div>
       </div>
 
@@ -63,6 +62,21 @@
       </div>
     </div>
 
-    <script src="./js/script.js"></script>
+    <div id="modal-overlay">
+      <div id="modal-content">
+        <button id="modal-close-btn" title="閉じる">&times;</button>
+        <div id="iframe-loader">読み込み中...</div>
+        <iframe
+          id="form-iframe"
+          src=""
+          frameborder="0"
+          marginheight="0"
+          marginwidth="0"
+        ></iframe>
+      </div>
+    </div>
+
+    <script src="./js/data.js"></script>
+    <script src="./js/main.js"></script>
   </body>
 </html>
