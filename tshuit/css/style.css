@@ -52,7 +52,7 @@ body {
 
 /* --- コントロールUI --- */
 .control-group {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 .control-group h2 {
   font-size: 1rem;
@@ -107,10 +107,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  user-select: none; /* テキスト選択を防ぐ */
+  user-select: none;
 }
 .design-switcher button {
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
   padding: 0.25rem 0.75rem;
   border: 1px solid #ccc;
@@ -122,28 +122,39 @@ body {
 .design-switcher button:hover {
   background-color: #e0e0e0;
 }
-#current-design-name {
-  font-size: 1rem;
+
+/* --- デザインカラー切り替え --- */
+#design-color-switcher {
+  display: none;
+  gap: 8px;
+}
+.design-color-btn {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  padding: 0 1rem;
-  text-align: center;
-  flex-grow: 1; /* 中央のスペースを埋める */
+  border: 2px solid #ccc;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.design-color-btn:hover {
+  background-color: #e0e0e0;
+}
+.design-color-btn.active {
+  border-color: #007bff;
+  background-color: #e0f0ff;
+  opacity: 1;
+  font-weight: 600;
 }
 
 /* --- 選択サマリー --- */
 .selection-summary {
   margin-top: 2rem; /* デザインUIとの間隔 */
-  padding: 1rem;
+  padding: 1.2rem 1rem;
   border: 2px solid #007bff;
   border-radius: 8px;
   background-color: #f0f8ff; /* (薄い青) */
-}
-.selection-summary h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 0.5rem;
 }
 .selection-summary ul {
   list-style: none;
@@ -162,8 +173,11 @@ body {
   font-weight: bold;
   color: #d9534f; /* (赤系) */
   margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #ccc;
 }
 .selection-summary .summary-price span {
+  font-weight: bold;
   color: #d9534f;
   /* (親要素が bold のため、重複する font-weight を削除) */
 }

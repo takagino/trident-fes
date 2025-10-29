@@ -1,6 +1,7 @@
 /**
  * ----------------------------------------------------------------
- * メインスクリプト
+ * メインスクリプト (ロジック)
+ * * ※ このスクリプトは data.js の後に読み込むこと
  * ----------------------------------------------------------------
  */
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,7 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const designImage = document.getElementById('design-image');
   const prevDesignButton = document.getElementById('prev-design');
   const nextDesignButton = document.getElementById('next-design');
-  const designNameDisplay = document.getElementById('current-design-name');
+
+  const designColorSwitcher = document.getElementById('design-color-switcher');
 
   // サマリー表示用
   const summaryItem = document.getElementById('summary-item');
@@ -28,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- アプリケーションの状態 ---
   let currentDesignIndex = 0; // 0 = 'デザインなし'
+  let currentDesignColor = 'black'; // 'black' または 'white'
 
   // --- 初期化関数 ---
 
@@ -107,27 +110,57 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * デザイン画像を更新する
+   * デザイン画像を更新する (白黒切り替えロジックを含む)
    */
   function updateDesignImage() {
     const selectedDesign = designs[currentDesignIndex];
+    // ファイル名が '_black' で終わるか (白黒バリエーションがあるか)
+    const hasColorVariants = selectedDesign.file.endsWith('_black');
 
-    if (selectedDesign.file === 'none') {
-      designImage.src = '';
-      designImage.alt = '';
-    } else {
-      const imagePath = `images/design/${selectedDesign.file}.png`;
+    if (hasColorVariants) {
+      // 白黒バリエーションあり
+      designColorSwitcher.style.display = 'flex'; // 切り替えUIを表示
+
+      // ボタンの active クラスを更新
+      updateDesignColorButtons();
+
+      // 'white' が選ばれていれば '_white', それ以外は '_black'
+      const colorSuffix = currentDesignColor === 'white' ? '_white' : '_black';
+      // ベースファイル名 (例: 'photo_cat_black' -> 'photo_cat')
+      const baseFile = selectedDesign.file.replace('_black', '');
+
+      const imagePath = `images/design/${baseFile}${colorSuffix}.png`;
       designImage.src = imagePath;
-      designImage.alt = selectedDesign.text;
+      designImage.alt = selectedDesign.text; // altはサマリーで処理
+    } else {
+      // 1色のみ (または 'none')
+      designColorSwitcher.style.display = 'none'; // 切り替えUIを非表示
+      // currentDesignColor = 'black'; // 1色のデザインに切り替わったら黒にリセット
+
+      if (selectedDesign.file === 'none') {
+        designImage.src = '';
+        designImage.alt = '';
+      } else {
+        const imagePath = `images/design/${selectedDesign.file}.png`;
+        designImage.src = imagePath;
+        designImage.alt = selectedDesign.text;
+      }
     }
-    updateDesignImageVisibility();
+    updateDesignImageVisibility(); // opacity 制御はそのまま実行
   }
 
   /**
-   * デザイン名をテキスト表示
+   * 白黒ボタンの見た目(activeクラス)を更新する
    */
-  function updateDesignNameDisplay() {
-    designNameDisplay.textContent = designs[currentDesignIndex].text;
+  function updateDesignColorButtons() {
+    const buttons = designColorSwitcher.querySelectorAll('.design-color-btn');
+    buttons.forEach((btn) => {
+      if (btn.dataset.color === currentDesignColor) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
   }
 
   /**
@@ -136,11 +169,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateDesignImageVisibility() {
     const selectedDesign = designs[currentDesignIndex];
 
-    // (タオルでもデザインUIは常に表示)
     const designControlGroup = prevDesignButton.closest('.control-group');
     designControlGroup.style.display = 'block';
 
-    // 「デザインなし」の場合のみ画像を非表示
     if (selectedDesign.file === 'none') {
       designImage.style.opacity = '0';
     } else {
@@ -149,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * 「現在の選択」サマリーを更新する
+   * 「現在の選択」サマリーを更新 (白黒テキスト差し替えを含む)
    */
   function updateSummary() {
     const currentType = itemSelect.value;
@@ -161,10 +192,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     summaryItem.textContent = items[currentType].text;
     summaryColor.textContent = colorObj ? colorObj.text : '---';
-    summaryDesign.textContent = selectedDesign.text;
+
+    // デザイン名 (白黒差し替え処理)
+    let designText = selectedDesign.text;
+    if (selectedDesign.file.endsWith('_black')) {
+      if (currentDesignColor === 'white') {
+        designText = designText.replace('（黒）', '（白）');
+      }
+      // 'black' の場合は元のテキスト (（黒）) のまま
+    }
+    summaryDesign.textContent = designText;
 
     const price = colorObj ? colorObj.price : 0;
-    summaryPrice.textContent = price.toLocaleString(); // 3桁カンマ区切り
+    summaryPrice.textContent = price.toLocaleString();
   }
 
   // --- モーダル関数 ---
@@ -176,14 +216,12 @@ document.addEventListener('DOMContentLoaded', () => {
     iframeLoader.style.display = 'block';
     formIframe.style.visibility = 'hidden';
 
-    // URLパラメータを作成
     const params = new URLSearchParams();
     params.append(FORM_FIELD_MAPPING.item, summaryItem.textContent);
     params.append(FORM_FIELD_MAPPING.color, summaryColor.textContent);
     params.append(FORM_FIELD_MAPPING.design, summaryDesign.textContent);
     params.append(FORM_FIELD_MAPPING.price, summaryPrice.textContent);
 
-    // ベースURLに ? が含まれているか判定し、& または ? で連結
     const separator = GOOGLE_FORM_BASE_URL.includes('?') ? '&' : '?';
     const finalUrl = `${GOOGLE_FORM_BASE_URL}${separator}${params.toString()}`;
 
@@ -196,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
    */
   function closeModal() {
     modalOverlay.style.display = 'none';
-    formIframe.src = ''; // フォームをリセット
+    formIframe.src = '';
   }
 
   // iframe読み込み完了時にローダーを非表示
@@ -210,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // アイテム変更
   itemSelect.addEventListener('change', () => {
     updateColorSwatches();
-    // (デザインはリセットしない)
   });
 
   // カラー変更
@@ -220,10 +257,10 @@ document.addEventListener('DOMContentLoaded', () => {
   nextDesignButton.addEventListener('click', () => {
     currentDesignIndex++;
     if (currentDesignIndex >= designs.length) {
-      currentDesignIndex = 0; // 末尾 -> 先頭(なし) へ
+      currentDesignIndex = 0;
     }
+    // currentDesignColor = 'black'; // ★削除: ここで色をリセットしない
     updateDesignImage();
-    updateDesignNameDisplay();
     updateSummary();
   });
 
@@ -231,18 +268,30 @@ document.addEventListener('DOMContentLoaded', () => {
   prevDesignButton.addEventListener('click', () => {
     currentDesignIndex--;
     if (currentDesignIndex < 0) {
-      currentDesignIndex = designs.length - 1; // 先頭 -> 末尾 へ
+      currentDesignIndex = designs.length - 1;
     }
+    // currentDesignColor = 'black'; // ★削除: ここで色をリセットしない
     updateDesignImage();
-    updateDesignNameDisplay();
     updateSummary();
+  });
+
+  // 白黒切り替えボタン (イベント委任)
+  designColorSwitcher.addEventListener('click', (e) => {
+    if (
+      e.target.classList.contains('design-color-btn') &&
+      !e.target.classList.contains('active')
+    ) {
+      const color = e.target.dataset.color; // 'white' or 'black'
+      currentDesignColor = color;
+      updateDesignImage(); // 画像を更新
+      updateSummary(); // サマリーテキストを更新
+    }
   });
 
   // フォームボタン
   openFormButton.addEventListener('click', openModal);
   modalCloseBtn.addEventListener('click', closeModal);
 
-  // モーダル背景クリックで閉じる
   modalOverlay.addEventListener('click', (e) => {
     if (e.target === modalOverlay) {
       closeModal();
@@ -253,6 +302,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeItemSelect();
   updateColorSwatches();
   updateDesignImage();
-  updateDesignNameDisplay();
   updateSummary();
 });

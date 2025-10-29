@@ -25,13 +25,17 @@
           <h2>3. デザインを選択</h2>
           <div class="design-switcher">
             <button id="prev-design" title="前のデザイン">&lt;</button>
-            <span id="current-design-name">デザインなし</span>
+            <div id="design-color-switcher" style="display: none">
+              <button class="design-color-btn active" data-color="black">
+                黒
+              </button>
+              <button class="design-color-btn" data-color="white">白</button>
+            </div>
             <button id="next-design" title="次のデザイン">&gt;</button>
           </div>
         </div>
 
         <div class="selection-summary">
-          <h3>現在の選択</h3>
           <ul>
             <li>アイテム: <span id="summary-item">---</span></li>
             <li>カラー: <span id="summary-color">---</span></li>

@@ -4,6 +4,23 @@
  * ----------------------------------------------------------------
  */
 
+const designs = [
+  { file: 'photo_cat_black', text: '写真 猫（黒）' },
+  { file: 'photo_dog_black', text: '写真 犬（黒）' },
+  { file: 'photo_woman_black', text: '写真 女性（黒）' },
+  { file: 'animal_horse_black', text: '馬（黒）' },
+  { file: 'animal_flamingo_black', text: 'フラミンゴ（黒）' },
+  { file: 'bird_piyo_black', text: 'ぴよ（黒）' },
+  { file: 'bird_mame_black', text: 'まめ（黒）' },
+  { file: 'town_street_black', text: '裏道（黒）' },
+  { file: 'town_trip_black', text: '旅（黒）' },
+  { file: 'town_home_black', text: '街並み（黒）' },
+  { file: 'town_man_black', text: '黄昏（黒）' },
+  { file: 'town_music01_black', text: '歌手 女性（黒）' },
+  { file: 'town_music02_black', text: '歌手 男性（黒）' },
+  { file: 'crowd_human', text: '群像 人間' },
+];
+
 // 価格表
 const prices = {
   longT: { white: 2200, color: 2700 },
@@ -287,14 +304,6 @@ const items = {
     ],
   },
 };
-
-// デザイン一覧
-const designs = [
-  { file: 'none', text: 'デザインなし' }, // 0番目
-  { file: 'photo01', text: '写真部01' },
-  { file: 'photo02', text: '写真部02' },
-  { file: 'photo03', text: '写真部03' },
-];
 
 // Google Form 設定
 const GOOGLE_FORM_BASE_URL =
