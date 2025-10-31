@@ -1,4 +1,4 @@
-const USE_MIC = true; // Or true
+const USE_MIC = false; // Or true
 
 let mic,
   fft,
@@ -47,12 +47,14 @@ function setup() {
 
   // effects.push(new EffectBars());
   // effects.push(new EffectBlob());
+  effects.push(new EffectBoids());
   // effects.push(new EffectBouncers());
   // effects.push(new EffectCellularGrowth());
   // effects.push(new EffectCircles());
   // effects.push(new EffectDancers());
   // effects.push(new EffectEqualizerGrid());
   // effects.push(new EffectEyesGrid());
+  effects.push(new EffectFloaters());
   // effects.push(new EffectFlowField());
   // effects.push(new EffectGeometricNoise());
   // effects.push(new EffectGridMovers());
@@ -64,15 +66,16 @@ function setup() {
   // effects.push(new EffectLissajous());
   // effects.push(new EffectMatrix());
   // effects.push(new EffectNoiseRibbons());
+  //effects.push(new EffectOrbitingBoxes());
   // effects.push(new EffectProceduralFlower());
   // effects.push(new EffectPulseCluster());
   // effects.push(new EffectRecursiveSplit());
   // effects.push(new EffectRotatingCircles());
   // effects.push(new EffectSunburst());
-  effects.push(new EffectSwarm());
+  //effects.push(new EffectSwarm());
   // effects.push(new EffectTunnel());
   // effects.push(new EffectVaseForm());
-  effects.push(new EffectWaveformCircular());
+  //effects.push(new EffectWaveformCircular());
 
   pickTwoRandomEffects();
 }
